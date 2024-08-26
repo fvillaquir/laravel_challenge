@@ -1,0 +1,173 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Api de Ordenes",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/compra": {
+            "post": {
+                "tags": [
+                    "Ordenes"
+                ],
+                "summary": "Crear una nueva orden de compra",
+                "description": "Este endpoint permite crear una nueva orden de compra, validando los datos ingresados y asociando productos a la orden. También envía un correo electrónico de confirmación al usuario.",
+                "operationId": "createOrder",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "domicilio_entrega",
+                                    "domicilio_facturacion",
+                                    "products"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "description": "ID del usuario que realiza la compra",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "domicilio_entrega": {
+                                        "description": "Domicilio de entrega",
+                                        "type": "string",
+                                        "example": "123 Calle Prueba, Buenos Aires"
+                                    },
+                                    "domicilio_facturacion": {
+                                        "description": "Domicilio de facturación",
+                                        "type": "string",
+                                        "example": "123 Calle Prueba, Buenos Aires"
+                                    },
+                                    "products": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "id": {
+                                                    "description": "ID del producto",
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "cantidad": {
+                                                    "description": "Cantidad de unidades del producto",
+                                                    "type": "integer",
+                                                    "example": 2
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Orden creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "/app/Swagger/Schemas/Order"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "user_id": [
+                                                    "El campo user_id es obligatorio."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error al crear la orden"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/orden/{id}": {
+            "get": {
+                "tags": [
+                    "Ordenes"
+                ],
+                "summary": "Obtener detalles de una orden por ID",
+                "description": "Este endpoint permite obtener los detalles de una orden específica, incluyendo los productos asociados, utilizando el ID de la orden.",
+                "operationId": "getOrderById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la orden",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles de la orden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "/app/Swagger/Schemas/Order"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Orden no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No existe"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Ordenes",
+            "description": "Ordenes"
+        }
+    ]
+}
