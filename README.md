@@ -13,7 +13,7 @@ This Laravel project is designed to test development tools and strategies such a
 
 Clone the repository:
 
-```git clone https://github.com/your-username/your-laravel-project.git```
+```git clone https://github.com/fvillaquir/laravel_testing.git```
 
 ```cd your-laravel-project ```
 
